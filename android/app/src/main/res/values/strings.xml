@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SideQuests</string>
+    <string name="title_activity_main">SideQuests</string>
+    <string name="package_name">net.arnavrana.sidequests</string>
+    <string name="custom_url_scheme">net.arnavrana.sidequests</string>
+</resources>

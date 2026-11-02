@@ -1,0 +1,16 @@
+node_modules
+.next
+.env*
+data/accounts.json
+data/*.tmp
+
+# Generated Android build artifacts and local signing material
+android/.gradle/
+android/**/build/
+android/local.properties
+*.apk
+*.aab
+*.jks
+*.keystore
+reference-projects/
+*.tsbuildinfo

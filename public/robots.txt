@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /search
+Disallow: /movie/*/watch
+Disallow: /tv/*/watch
+
+Sitemap: https://watchtopia.akimbolabs.site/sitemap.xml
