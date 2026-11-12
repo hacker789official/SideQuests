@@ -19,43 +19,54 @@ export default async function AnimeHub() {
     anilist.browse.popular({ type: "ANIME", perPage: 12 }),
   ])
 
+  const actionClassName =
+    "inline-flex min-h-11 items-center rounded-xl border border-cyan-200/35 px-5 py-2 text-sm font-bold text-cyan-100 cp-glow-cyan transition-colors hover:bg-cyan-300/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-100"
+
   return (
-    <div className="container space-y-16 py-8">
-      <div className="space-y-3">
-        <p className="text-xs font-bold uppercase tracking-[0.3em] text-primary cp-glow-cyan">
-          Anime & Manga
+    <div className="sidequests-page container space-y-16 py-8">
+      <header className="space-y-3">
+        <p className="cp-glow-cyan text-xs font-bold uppercase tracking-[0.3em] text-primary">
+          Anime &amp; Manga
         </p>
-        <h1 className="text-4xl font-black tracking-tight md:text-6xl cp-gradient-text">
+        <h1 className="cp-gradient-text text-4xl font-black tracking-tight md:text-6xl">
           Anime
         </h1>
         <p className="max-w-2xl text-muted-foreground">
-          Browse trending and popular anime series and films, then page through AniList’s 20k+ anime catalog with filters for genre, season, year, and score.
+          Browse trending and popular anime series and films, then explore
+          AniList’s catalog with filters for genre, season, year, and score.
         </p>
-      </div>
+      </header>
 
-      <Section title="Trending Now" href="/anime/trending" media={trending.media} />
+      <Section
+        title="Trending now"
+        href="/anime/trending"
+        media={trending.media}
+      />
       <Section title="Popular" href="/anime/popular" media={popular.media} />
 
-      <div className="flex flex-wrap gap-3 pt-4">
-        <Link
-          href="/anime/popular"
-          className="rounded-full border border-primary/50 px-5 py-2 text-sm font-semibold text-primary cp-glow-cyan hover:bg-primary/10 transition-colors"
-        >
-          Explore full catalog →
+      <nav
+        className="flex flex-wrap gap-3 pt-4"
+        aria-label="Anime and manga collections"
+      >
+        <Link href="/anime/popular" className={actionClassName}>
+          Explore full catalog{" "}
+          <span aria-hidden="true" className="ml-1">
+            →
+          </span>
         </Link>
-        <Link
-          href="/anime/top-rated"
-          className="rounded-full border border-primary/50 px-5 py-2 text-sm font-semibold text-primary cp-glow-cyan hover:bg-primary/10 transition-colors"
-        >
-          Top Rated →
+        <Link href="/anime/top-rated" className={actionClassName}>
+          Top rated{" "}
+          <span aria-hidden="true" className="ml-1">
+            →
+          </span>
         </Link>
-        <Link
-          href="/manga"
-          className="rounded-full border border-accent/50 px-5 py-2 text-sm font-semibold text-accent cp-glow-magenta hover:bg-accent/10 transition-colors"
-        >
-          Browse Manga →
+        <Link href="/manga" className={actionClassName}>
+          Browse manga{" "}
+          <span aria-hidden="true" className="ml-1">
+            →
+          </span>
         </Link>
-      </div>
+      </nav>
     </div>
   )
 }
@@ -69,10 +80,18 @@ const Section = ({
   href: string
   media: import("@/anilist/models/media").AniListMedia[]
 }) => (
-  <section className="space-y-4">
-    <div className="flex items-center justify-between">
-      <h2 className="text-xl font-bold">{title}</h2>
-      <Link href={href} className="text-sm text-primary hover:underline">
+  <section
+    className="sidequests-rail streamhub-rail space-y-4"
+    aria-label={`${title} anime`}
+  >
+    <div className="sidequests-section-heading">
+      <div>
+        <h2>{title}</h2>
+      </div>
+      <Link
+        href={href}
+        className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-100"
+      >
         View all
       </Link>
     </div>

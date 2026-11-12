@@ -63,10 +63,7 @@ export const WatchlistCardWrapper: React.FC<WatchlistCardWrapperProps> = ({
   const handleDontAskAgainChange = (dontAskAgain: boolean) => {
     setSkipConfirmation(dontAskAgain)
     if (typeof window !== "undefined") {
-      localStorage.setItem(
-        "skipWatchlistConfirmation",
-        dontAskAgain.toString()
-      )
+      localStorage.setItem("skipWatchlistConfirmation", dontAskAgain.toString())
     }
   }
 
@@ -90,20 +87,23 @@ export const WatchlistCardWrapper: React.FC<WatchlistCardWrapperProps> = ({
 
   return (
     <div className="relative">
-      
       <button
         onClick={handleRemove}
-        className="absolute left-2 top-2 z-20 rounded-full bg-background/80 p-1 text-foreground backdrop-blur-sm transition-colors hover:bg-background"
-        aria-label="Remove from watchlist"
+        type="button"
+        className="absolute left-2 top-2 z-20 flex size-11 items-center justify-center rounded-full bg-background/85 text-foreground shadow-sm backdrop-blur-sm transition-colors hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        aria-label={`Remove ${
+          item.title || item.name || "title"
+        } from watchlist`}
+        title="Remove from watchlist"
       >
         <X className="size-4" />
       </button>
 
       <div>
         {item.media_type === "tv" ? (
-          <TvCard key={item.id} {...tvProps as any} />
+          <TvCard key={item.id} {...(tvProps as any)} />
         ) : (
-          <MovieCard key={item.id} {...movieProps as any} />
+          <MovieCard key={item.id} {...(movieProps as any)} />
         )}
       </div>
 
@@ -112,7 +112,9 @@ export const WatchlistCardWrapper: React.FC<WatchlistCardWrapperProps> = ({
         onOpenChange={setIsConfirmOpen}
         title="Remove from Watchlist"
         description={`Are you sure you want to remove "${
-          item.media_type === "tv" ? item.name || item.title : item.title || item.name
+          item.media_type === "tv"
+            ? item.name || item.title
+            : item.title || item.name
         }" from your watchlist?`}
         onConfirm={removeItem}
         confirmText="Remove"

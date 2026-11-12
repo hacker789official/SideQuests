@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 
 import { getLocalTvEpisodeProgressMap } from "@/lib/local-watch-data"
@@ -22,14 +22,16 @@ export function TvEpisodeFilter({
   const [filter, setFilter] = useState<Filter>("all")
   const [started, setStarted] = useState<Record<string, unknown>>({})
 
-  const refresh = () => setStarted(getLocalTvEpisodeProgressMap(tvId, season))
+  const refresh = useCallback(() => {
+    setStarted(getLocalTvEpisodeProgressMap(tvId, season))
+  }, [season, tvId])
 
   useEffect(() => {
     refresh()
     const onUpdate = () => refresh()
     window.addEventListener("WATCH_DATA_UPDATED", onUpdate)
     return () => window.removeEventListener("WATCH_DATA_UPDATED", onUpdate)
-  }, [season, tvId])
+  }, [refresh])
 
   const visibleEpisodes = useMemo(() => {
     if (filter === "all") return episodes
@@ -56,13 +58,17 @@ export function TvEpisodeFilter({
               type="button"
               onClick={() => setFilter(option)}
               aria-pressed={filter === option}
-              className={`rounded-full px-3 py-1.5 text-xs font-semibold capitalize transition ${
+              className={`min-h-10 rounded-full px-3 py-1.5 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                 filter === option
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              {option}
+              {option === "all"
+                ? "All"
+                : option === "started"
+                ? "In progress"
+                : "Not started"}
             </button>
           ))}
         </div>
@@ -74,10 +80,14 @@ export function TvEpisodeFilter({
               <TvEpisodeCard {...episode} />
               <Link
                 href={`/tv/${tvId}?play=true&season=${season}&episode=${episode.episode_number}`}
-                className="inline-flex min-h-10 items-center justify-center rounded-full bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition hover:bg-primary/90"
+                aria-label={`Watch season ${season}, episode ${episode.episode_number}: ${episode.name}`}
+                className="inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
-                Watch S{season} E
-                {String(episode.episode_number).padStart(2, "0")}
+                Watch{" "}
+                {season === 0
+                  ? "Specials"
+                  : `S${String(season).padStart(2, "0")}`}{" "}
+                E{String(episode.episode_number).padStart(2, "0")}
               </Link>
             </article>
           ))}

@@ -67,7 +67,7 @@ export default async function Detail({ params }: DetailProps) {
         <Link
           key={id}
           href={`/movie/discover?with_companies=${id}`}
-          className="mr-1 border-b-2 transition hover:text-foreground"
+          className="mr-1 border-b border-cyan-300/40 transition hover:border-cyan-200 hover:text-cyan-100"
           prefetch={false}
         >
           {name}
@@ -77,15 +77,16 @@ export default async function Detail({ params }: DetailProps) {
   ]
 
   return (
-    <section className="space-y-4">
-      
+    <section className="sidequests-rail space-y-4" aria-label="Movie details">
       <WatchHistoryTracker id={id} mediaType="movie" data={movie} />
 
-      <div className="grid grid-cols-2 gap-y-12 rounded border p-6 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-x-5 gap-y-8 rounded-2xl border border-cyan-200/15 bg-slate-950/45 p-5 shadow-[0_16px_48px_rgba(0,0,0,0.2)] sm:p-6 md:grid-cols-4">
         {overview.map((item) => (
           <div key={item.title}>
-            <h2 className="font-medium md:text-xl">{item.title}</h2>
-            <p className="mt-2 line-clamp-2 text-sm text-muted-foreground md:text-base">
+            <h2 className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-cyan-200/80 md:text-xs">
+              {item.title}
+            </h2>
+            <p className="mt-2 line-clamp-2 text-sm font-medium text-zinc-100 md:text-base">
               {item.value}
             </p>
           </div>

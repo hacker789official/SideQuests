@@ -1,17 +1,17 @@
 "use client"
 
-import { Suspense, useState, useEffect } from "react"
-import { usePathname } from "next/navigation"
+import { Suspense, useEffect, useState } from "react"
 import Link from "next/link"
-import { User } from "lucide-react"
+import { usePathname } from "next/navigation"
+import { User, Zap } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { SearchInput } from "@/components/search-input"
 import { SiteMenu } from "@/components/site-menu"
 import { SiteNav } from "@/components/site-nav"
 import { SiteSettings } from "@/components/site-settings"
-import { Button } from "@/components/ui/button"
 import SyncDialog from "@/components/sync-dialog"
 
 export const SiteHeader = () => {
@@ -31,7 +31,8 @@ export const SiteHeader = () => {
     return null
   }
 
-  const isFloatingHeaderPage = pathname === "/" || /^\/(movie|tv|person)\/\d+/.test(pathname || "")
+  const isFloatingHeaderPage =
+    pathname === "/" || /^\/(movie|tv|person)\/\d+/.test(pathname || "")
 
   return (
     <header
@@ -41,21 +42,32 @@ export const SiteHeader = () => {
           ? "fixed border-b-0"
           : "border-b border-white/[0.08] bg-zinc-950/95 backdrop-blur-xl",
         isFloatingHeaderPage && isScrolled
-          ? "bg-zinc-950/90 backdrop-blur-xl border-b border-cyan-300/15 shadow-[0_12px_40px_rgba(0,0,0,0.30)]"
+          ? "border-b border-cyan-300/15 bg-zinc-950/90 shadow-[0_12px_40px_rgba(0,0,0,0.30)] backdrop-blur-xl"
           : isFloatingHeaderPage
-          ? "bg-gradient-to-b from-zinc-950/95 via-zinc-950/55 to-transparent border-transparent"
+          ? "border-transparent bg-gradient-to-b from-zinc-950/95 via-zinc-950/55 to-transparent"
           : ""
       )}
     >
-      <div className="container flex h-14 items-center gap-2 px-3 sm:h-16 sm:justify-between sm:px-4 lg:h-[4.5rem] lg:px-0">
-        <Link href="/" className="shrink-0 text-sm font-black tracking-tight text-cyan-100 lg:hidden">
-          SideQuests
+      <div className="container flex h-14 items-center gap-2 px-3 sm:h-16 sm:justify-between sm:gap-3 sm:px-4 lg:h-[4.5rem] lg:px-0">
+        <Link
+          href="/"
+          aria-label="SideQuests home"
+          className="group flex shrink-0 items-center gap-2 text-sm font-black tracking-tight text-white"
+        >
+          <span className="group-hover:bg-cyan-300/20 flex size-8 items-center justify-center rounded-xl border border-cyan-200/35 bg-cyan-300/10 text-cyan-200 shadow-[0_0_22px_rgba(34,211,238,0.22)] transition sm:size-9">
+            <Zap className="size-4 fill-current sm:size-[18px]" />
+          </span>
+          <span className="hidden sm:inline">
+            Side<span className="text-cyan-300">Quests</span>
+          </span>
         </Link>
         <SiteNav />
 
         <div className="flex min-w-0 flex-1 justify-end gap-1.5 sm:gap-2">
-          <Suspense fallback={<Skeleton className="h-10 w-[min(14rem,50vw)] sm:w-60" />}>
-            <SearchInput className="w-[min(14rem,50vw)] sm:w-60" />
+          <Suspense
+            fallback={<Skeleton className="h-10 w-[min(14rem,50vw)] sm:w-60" />}
+          >
+            <SearchInput className="w-[min(10rem,40vw)] sm:w-56 lg:w-64" />
           </Suspense>
 
           <SiteSettings />
@@ -81,4 +93,3 @@ export const SiteHeader = () => {
     </header>
   )
 }
-

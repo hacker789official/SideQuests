@@ -2,17 +2,26 @@
 
 import React, { useEffect, useState } from "react"
 import { Loader2, LogOut, RefreshCw, UserCircle2 } from "lucide-react"
+
+import { signOut } from "@/lib/auth"
+import { stopAutoSync, syncCloudNow } from "@/lib/auto-sync"
+import {
+  WATCH_DATA_UPDATED,
+  getLastSyncTime,
+  unlinkDevice,
+} from "@/lib/cloud-account"
+import { getSyncCredentials, setSyncCredentials } from "@/lib/sync-config"
+import { cn } from "@/lib/utils"
+import {
+  getWatchHistoryEnabled,
+  setWatchHistoryEnabled,
+} from "@/lib/watch-data"
+import { useAuthSession } from "@/hooks/use-auth-session"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
-import { getSyncCredentials, setSyncCredentials } from "@/lib/sync-config"
-import { WATCH_DATA_UPDATED, unlinkDevice, getLastSyncTime } from "@/lib/cloud-account"
-import { stopAutoSync, triggerCloudSync } from "@/lib/auto-sync"
-import { getWatchHistoryEnabled, setWatchHistoryEnabled } from "@/lib/watch-data"
-import { useAuthSession } from "@/hooks/use-auth-session"
-import { signOut } from "@/lib/auth"
+
 import SyncDialog from "./sync-dialog"
-import { cn } from "@/lib/utils"
 
 export const SyncStatus = () => {
   const { user, loading: authLoading } = useAuthSession()
@@ -27,7 +36,6 @@ export const SyncStatus = () => {
   const [historyEnabled, setHistoryEnabled] = useState(true)
 
   const updateState = async () => {
-    
     setHistoryEnabled(getWatchHistoryEnabled())
 
     const credentials = getSyncCredentials()
@@ -35,7 +43,7 @@ export const SyncStatus = () => {
       setIsLinked(true)
       setSyncEmail(credentials.email)
       setSyncPin(credentials.pin)
-      
+
       const lastSync = await getLastSyncTime(credentials.email, credentials.pin)
       if (lastSync) {
         setLastSyncTimeStr(new Date(lastSync).toLocaleTimeString())
@@ -62,7 +70,10 @@ export const SyncStatus = () => {
 
     window.addEventListener(WATCH_DATA_UPDATED, handleUpdate as EventListener)
     return () => {
-      window.removeEventListener(WATCH_DATA_UPDATED, handleUpdate as EventListener)
+      window.removeEventListener(
+        WATCH_DATA_UPDATED,
+        handleUpdate as EventListener
+      )
     }
   }, [])
 
@@ -70,7 +81,11 @@ export const SyncStatus = () => {
     setHistoryEnabled(checked)
     try {
       setWatchHistoryEnabled(checked)
-      setSyncLog(checked ? "Watch history tracking enabled." : "Watch history tracking disabled.")
+      setSyncLog(
+        checked
+          ? "Watch history tracking enabled."
+          : "Watch history tracking disabled."
+      )
     } catch (e) {
       console.error(e)
     }
@@ -80,25 +95,32 @@ export const SyncStatus = () => {
     if (!isLinked) return
     try {
       setSyncing(true)
-      setSyncLog("Initializing full database sync...")
+      setSyncLog("Syncing your SideQuests library…")
+      const credentials = getSyncCredentials()
+      if (!credentials) throw new Error("Link an account before syncing.")
 
-      triggerCloudSync()
+      const synced = await syncCloudNow()
+      if (!synced)
+        throw new Error(
+          "Cloud sync could not be confirmed. Your local library is still available."
+        )
 
-      setTimeout(async () => {
-        const credentials = getSyncCredentials()
-        if (credentials) {
-          const lastSync = await getLastSyncTime(credentials.email, credentials.pin)
-          if (lastSync) {
-            setLastSyncTimeStr(new Date(lastSync).toLocaleTimeString())
-          }
-        }
-        setSyncing(false)
-        setSyncLog("Sync completed successfully.")
-      }, 2500)
-    } catch (e) {
-      console.error(e)
+      const lastSync = await getLastSyncTime(credentials.email, credentials.pin)
+      setLastSyncTimeStr(
+        lastSync
+          ? new Date(lastSync).toLocaleTimeString()
+          : new Date().toLocaleTimeString()
+      )
+      setSyncLog("Your SideQuests library is synced.")
+    } catch (error) {
+      console.error(error)
+      setSyncLog(
+        error instanceof Error
+          ? error.message
+          : "Cloud sync failed. Your local library is still available."
+      )
+    } finally {
       setSyncing(false)
-      setSyncLog("Sync failed. Check connection.")
     }
   }
 
@@ -141,19 +163,20 @@ export const SyncStatus = () => {
   }
 
   return (
-    <div className="space-y-4 rounded-lg bg-black/40 border border-white/10 p-3 backdrop-blur-md">
-
+    <div className="space-y-4 rounded-2xl border border-cyan-200/15 bg-slate-950/65 p-3 shadow-[0_12px_32px_rgba(0,0,0,0.25)] backdrop-blur-md">
       <div className="flex items-center justify-between border-b border-white/5 pb-3">
         <div className="flex items-center gap-2">
           <UserCircle2 className="size-4 text-primary" />
           <div className="space-y-0.5">
-            <Label className="text-xs text-white font-semibold">Account</Label>
-            <p className="text-[10px] text-muted-foreground truncate max-w-[160px]">
+            <Label className="text-xs font-semibold text-white">Account</Label>
+            <p className="max-w-[160px] truncate text-[10px] text-muted-foreground">
               {authLoading
                 ? "Checking session..."
                 : user
-                  ? user.displayName ? `${user.displayName} · @${user.username}` : `@${user.username}`
-                  : "Not signed in"}
+                ? user.displayName
+                  ? `${user.displayName} · @${user.username}`
+                  : `@${user.username}`
+                : "Not signed in"}
             </p>
           </div>
         </div>
@@ -185,10 +208,15 @@ export const SyncStatus = () => {
 
       <div className="flex items-center justify-between border-b border-white/5 pb-3">
         <div className="space-y-0.5">
-          <Label className="text-xs text-white font-semibold cursor-pointer" htmlFor="track-history-switch">
+          <Label
+            className="cursor-pointer text-xs font-semibold text-white"
+            htmlFor="track-history-switch"
+          >
             Track History
           </Label>
-          <p className="text-[10px] text-muted-foreground">Save recently watched movies & shows</p>
+          <p className="text-[10px] text-muted-foreground">
+            Save recently watched movies & shows
+          </p>
         </div>
         <Switch
           id="track-history-switch"
@@ -199,26 +227,30 @@ export const SyncStatus = () => {
 
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <span className="text-xs text-muted-foreground font-semibold font-sans">Sync Connection</span>
+          <span className="font-sans text-xs font-semibold text-muted-foreground">
+            Sync Connection
+          </span>
           <div className="flex items-center gap-1.5 font-sans">
             <span
               className={cn(
                 "size-2 rounded-full",
-                isLinked ? "bg-green-500 animate-pulse" : "bg-zinc-500"
+                isLinked ? "bg-cyan-300" : "bg-zinc-500"
               )}
             />
-            <span className="text-[10px] uppercase font-bold tracking-wider">
-              {isLinked ? "Linked" : "Offline"}
+            <span className="text-[10px] font-bold uppercase tracking-wider">
+              {isLinked ? "Linked" : "Not linked"}
             </span>
           </div>
         </div>
 
         {isLinked ? (
           <div className="space-y-2">
-            <div className="rounded bg-white/5 p-2 text-[11px] space-y-1 border border-white/5 font-sans font-medium">
+            <div className="space-y-1 rounded border border-white/5 bg-white/5 p-2 font-sans text-[11px] font-medium">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Account:</span>
-                <span className="font-mono text-white/90 truncate max-w-[150px]">{syncEmail}</span>
+                <span className="max-w-[150px] truncate font-mono text-white/90">
+                  {syncEmail}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Last Sync:</span>
@@ -231,21 +263,21 @@ export const SyncStatus = () => {
                 size="sm"
                 onClick={handleManualSync}
                 disabled={syncing}
-                className="h-8 flex-1 text-xs gap-1.5"
+                className="min-h-10 flex-1 gap-1.5 text-xs"
               >
                 {syncing ? (
                   <Loader2 className="size-3.5 animate-spin" />
                 ) : (
                   <RefreshCw className="size-3.5" />
                 )}
-                Sync Now
+                {syncing ? "Syncing…" : "Sync now"}
               </Button>
               <Button
                 size="sm"
                 variant="destructive"
                 onClick={handleUnlinkClick}
                 disabled={syncing}
-                className="h-8 px-3 text-xs bg-red-950/40 border border-red-500/30 text-red-400 hover:bg-red-900 hover:text-white"
+                className="min-h-10 border border-red-500/30 bg-red-950/40 px-3 text-xs text-red-300 hover:bg-red-900 hover:text-white"
                 title="Unlink Device"
               >
                 <LogOut className="size-3.5" />
@@ -254,13 +286,13 @@ export const SyncStatus = () => {
           </div>
         ) : (
           <div className="space-y-2">
-            <p className="text-[11px] text-muted-foreground text-center">
+            <p className="text-center text-[11px] text-muted-foreground">
               Sign in to sync watchlist and history with the mobile app.
             </p>
             <Button
               size="sm"
               onClick={() => setShowSyncDialog(true)}
-              className="w-full h-8 text-xs font-semibold"
+              className="h-8 w-full text-xs font-semibold"
             >
               Link Device
             </Button>
@@ -268,7 +300,11 @@ export const SyncStatus = () => {
         )}
 
         {syncLog && (
-          <div className="rounded bg-black/60 border border-white/5 p-1.5 text-[9px] text-primary/90 font-mono">
+          <div
+            role="status"
+            aria-live="polite"
+            className="rounded-lg border border-cyan-200/10 bg-black/50 p-2 font-mono text-[10px] text-cyan-100/90"
+          >
             &gt; {syncLog}
           </div>
         )}

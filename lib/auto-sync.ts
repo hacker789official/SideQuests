@@ -1,11 +1,11 @@
 import {
+  WATCH_DATA_UPDATED,
   WatchData,
   applyWatchData,
+  mergeWatchData,
   retrieveFromAccountCloud,
   subscribeToChanges,
   syncToAccountCloud,
-  mergeWatchData,
-  WATCH_DATA_UPDATED,
 } from "./cloud-account"
 import { getAutoSyncEnabled, getSyncCredentials } from "./sync-config"
 import { getLocalWatchData, saveLocalWatchData } from "./watch-data"
@@ -14,54 +14,64 @@ let syncInterval: NodeJS.Timeout | null = null
 let unsubscribeRealtime: (() => void) | null = null
 let syncTimeout: NodeJS.Timeout | null = null
 
+const synchronizeAccountCloud = async (credentials: {
+  email: string
+  pin: string
+}) => {
+  const { email, pin } = credentials
+  const cloudData = await retrieveFromAccountCloud(email, pin)
+  const localData = getLocalWatchData()
+  const mergedData: WatchData = cloudData
+    ? mergeWatchData(localData, cloudData)
+    : { ...localData, updated_at: new Date().toISOString() }
+
+  const success = await syncToAccountCloud(email, pin, mergedData, true)
+  if (!success) return false
+
+  saveLocalWatchData(mergedData)
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(
+      new CustomEvent(WATCH_DATA_UPDATED, {
+        detail: {
+          hasNewHistory: true,
+          hasNewWatches: true,
+          hasProgressUpdate: true,
+        },
+      })
+    )
+  }
+  return true
+}
+
+export const syncCloudNow = async () => {
+  const credentials = getSyncCredentials()
+  if (!credentials) return false
+
+  if (syncTimeout) {
+    clearTimeout(syncTimeout)
+    syncTimeout = null
+  }
+
+  try {
+    return await synchronizeAccountCloud(credentials)
+  } catch (error) {
+    console.error("Manual cloud sync error:", error)
+    return false
+  }
+}
+
 export const triggerCloudSync = () => {
   const credentials = getSyncCredentials()
   if (!credentials) return
 
-  if (syncTimeout) {
-    clearTimeout(syncTimeout)
-  }
-
+  if (syncTimeout) clearTimeout(syncTimeout)
   syncTimeout = setTimeout(async () => {
     try {
-      const { email, pin } = credentials
-      
-      const cloudData = await retrieveFromAccountCloud(email, pin)
-
-      const localData = getLocalWatchData()
-
-      let mergedData: WatchData
-      if (cloudData) {
-        
-        mergedData = mergeWatchData(localData, cloudData)
-      } else {
-        mergedData = {
-          ...localData,
-          updated_at: new Date().toISOString(),
-        }
-      }
-
-      const success = await syncToAccountCloud(email, pin, mergedData, true)
-      if (success) {
-        
-        saveLocalWatchData(mergedData)
-
-        if (typeof window !== "undefined") {
-          window.dispatchEvent(
-            new CustomEvent(WATCH_DATA_UPDATED, {
-              detail: {
-                hasNewHistory: true,
-                hasNewWatches: true,
-                hasProgressUpdate: true,
-              },
-            })
-          )
-        }
-      }
+      await synchronizeAccountCloud(credentials)
     } catch (error) {
       console.error("Background sync error:", error)
     }
-  }, 2000) 
+  }, 2000)
 }
 
 if (typeof window !== "undefined") {
@@ -73,7 +83,7 @@ if (typeof window !== "undefined") {
 }
 
 export const startAutoSync = () => {
-  if (syncInterval) return 
+  if (syncInterval) return
 
   const checkForUpdates = async () => {
     try {
@@ -171,12 +181,10 @@ export const syncWatchProgressToCloud = async (
   watchData: WatchData
 ): Promise<boolean> => {
   try {
-    
     saveLocalWatchData(watchData)
 
     const credentials = getSyncCredentials()
     if (credentials) {
-      
       triggerCloudSync()
     }
     return true

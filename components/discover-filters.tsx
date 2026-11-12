@@ -42,22 +42,33 @@ export const DiscoverFilters: React.FC<DiscoverFiltersProps> = ({
 
   return (
     <Sheet>
-      <SheetTrigger className={cn(buttonVariants({ variant: "outline" }))}>
+      <SheetTrigger
+        className={cn(buttonVariants({ variant: "outline" }), "min-h-11")}
+      >
         <SlidersHorizontal className="mr-2 size-4" /> Filters
         {count > 0 && (
-          <Badge className="ml-2 px-2 text-xs leading-none">{count}</Badge>
+          <Badge
+            className="ml-2 px-2 text-xs leading-none"
+            aria-label={`${count} active filters`}
+          >
+            {count}
+          </Badge>
         )}
       </SheetTrigger>
 
-      <SheetContent className="flex flex-col px-0">
+      <SheetContent className="flex h-full max-h-dvh flex-col px-0">
         <SheetHeader className="px-4 md:px-6">
           <SheetTitle>Filters</SheetTitle>
           <SheetDescription>
-            Narrow down your search results with the following filters.
+            {count > 0
+              ? `${count} active ${
+                  count === 1 ? "filter" : "filters"
+                }. Adjust them, then save to update results.`
+              : "Choose genres, dates, language, providers, or ratings to narrow results."}
           </SheetDescription>
         </SheetHeader>
 
-        <ScrollArea className="px-4 md:px-6">
+        <ScrollArea className="min-h-0 flex-1 px-4 md:px-6">
           <div className="space-y-8">
             <DiscoverFilterGenre
               genres={genres}
@@ -110,11 +121,19 @@ export const DiscoverFilters: React.FC<DiscoverFiltersProps> = ({
           </div>
         </ScrollArea>
 
-        <SheetFooter className="gap-2 px-4 md:gap-0 md:px-6">
-          <Button size="lg" variant="outline" onClick={clearFilters}>
+        <SheetFooter className="gap-2 border-t border-border/50 px-4 pt-3 md:gap-0 md:px-6">
+          <Button
+            size="lg"
+            variant="outline"
+            className="min-h-11"
+            onClick={clearFilters}
+          >
             Clear
           </Button>
-          <SheetClose className={buttonVariants()} onClick={saveFilters}>
+          <SheetClose
+            className={cn(buttonVariants(), "min-h-11")}
+            onClick={saveFilters}
+          >
             Save Changes
           </SheetClose>
         </SheetFooter>

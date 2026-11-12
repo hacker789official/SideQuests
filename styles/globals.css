@@ -99,9 +99,7 @@
   }
 }
 
-
-
-  .theme-ocean {
+.theme-ocean {
   --primary: 188 100% 50% !important;
   --primary-foreground: 220 42% 5% !important;
   --secondary: 216 35% 16% !important;
@@ -111,7 +109,6 @@
   --ring: 188 100% 50% !important;
   --border: 188 60% 24% !important;
 }
-
 
 .dark .theme-ocean,
 .dark.theme-ocean {
@@ -131,16 +128,16 @@
   --border: 188 40% 20% !important;
 }
 
-
 .logo-cyan {
-  filter: brightness(0) saturate(100%) invert(74%) sepia(88%) saturate(1821%) hue-rotate(142deg) brightness(102%) contrast(103%) !important;
+  filter: brightness(0) saturate(100%) invert(74%) sepia(88%) saturate(1821%)
+    hue-rotate(142deg) brightness(102%) contrast(103%) !important;
   transition: filter 0.3s ease;
 }
 
 .logo-cyan:hover {
-  filter: brightness(0) saturate(100%) invert(77%) sepia(90%) saturate(1821%) hue-rotate(142deg) brightness(112%) contrast(105%) !important;
+  filter: brightness(0) saturate(100%) invert(77%) sepia(90%) saturate(1821%)
+    hue-rotate(142deg) brightness(112%) contrast(105%) !important;
 }
-
 
 .grid-lines {
   color: hsla(189, 100%, 50%, 0.08) !important;
@@ -167,9 +164,16 @@
   --border: 189 60% 20% !important;
   min-height: 100vh;
   color: hsl(var(--foreground));
-  background:
-    radial-gradient(circle at 8% 0%, hsl(210 100% 50% / 0.14), transparent 28rem),
-    radial-gradient(circle at 92% 12%, hsl(189 100% 50% / 0.08), transparent 25rem),
+  background: radial-gradient(
+      circle at 8% 0%,
+      hsl(210 100% 50% / 0.14),
+      transparent 28rem
+    ),
+    radial-gradient(
+      circle at 92% 12%,
+      hsl(189 100% 50% / 0.08),
+      transparent 25rem
+    ),
     hsl(var(--background));
 }
 
@@ -194,20 +198,17 @@
 }
 
 .theme-ocean .cp-glow-cyan {
-  text-shadow:
-    0 0 6px hsla(189, 100%, 60%, 0.9),
+  text-shadow: 0 0 6px hsla(189, 100%, 60%, 0.9),
     0 0 24px hsla(189, 100%, 50%, 0.5);
 }
 
 .theme-ocean .cp-glow-magenta {
-  text-shadow:
-    0 0 6px hsl(216, 100%, 68%, 0.9),
+  text-shadow: 0 0 6px hsl(216, 100%, 68%, 0.9),
     0 0 24px hsl(216, 100%, 58%, 0.5);
 }
 
 .theme-ocean .cp-border-glow {
-  box-shadow:
-    0 0 0 1px hsla(189, 100%, 50%, 0.4),
+  box-shadow: 0 0 0 1px hsla(189, 100%, 50%, 0.4),
     0 0 20px hsl(216, 100%, 58%, 0.15);
 }
 
@@ -232,7 +233,6 @@
   background-clip: text;
   color: transparent;
 }
-
 
 @keyframes slideUpBounce {
   0% {
@@ -271,10 +271,13 @@
   animation: slideDownFade 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 
-
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUpFadeIn {
@@ -357,7 +360,6 @@
   animation-delay: 500ms;
 }
 
-
 .bg-vignette-bottom {
   background: linear-gradient(
     to top,
@@ -369,25 +371,29 @@
   );
 }
 
-
-
-
 /* SideQuests premium cinema system */
 :root {
-  --sq-ink: 220 42% 5%;
-  --sq-panel: 222 34% 9%;
-  --sq-panel-soft: 220 28% 13%;
-  --sq-blue: 216 100% 58%;
-  --sq-cyan: 188 100% 50%;
-  --sq-cyan-soft: 190 92% 72%;
+  --sq-ink: 220 48% 4%;
+  --sq-panel: 222 38% 8%;
+  --sq-panel-soft: 220 32% 12%;
+  --sq-blue: 204 100% 56%;
+  --sq-cyan: 188 100% 53%;
+  --sq-cyan-soft: 188 96% 73%;
   --sq-cream: 210 40% 98%;
   --sq-muted: 215 18% 66%;
 }
 
 body {
-  background:
-    radial-gradient(circle at 80% -10%, hsl(var(--sq-blue) / 0.18), transparent 34rem),
-    radial-gradient(circle at 12% 28%, hsl(var(--sq-cyan) / 0.08), transparent 30rem),
+  background: radial-gradient(
+      circle at 80% -10%,
+      hsl(var(--sq-blue) / 0.18),
+      transparent 34rem
+    ),
+    radial-gradient(
+      circle at 12% 28%,
+      hsl(var(--sq-cyan) / 0.08),
+      transparent 30rem
+    ),
     hsl(var(--sq-ink));
   color: hsl(var(--sq-cream));
 }
@@ -397,14 +403,19 @@ body {
   isolation: isolate;
 }
 
-.sidequests-page::before {
+.sidequests-page::before,
+.sidequests-detail-page::before {
   content: "";
   position: absolute;
   inset: 0 0 auto;
   height: 34rem;
   pointer-events: none;
   z-index: -1;
-  background: linear-gradient(180deg, hsl(var(--sq-cyan) / 0.08), transparent 72%);
+  background: linear-gradient(
+    180deg,
+    hsl(var(--sq-cyan) / 0.08),
+    transparent 72%
+  );
 }
 
 .sidequests-rail {
@@ -486,14 +497,58 @@ body {
   width: 5.5rem;
   height: 0.2rem;
   border-radius: 999px;
-  background: linear-gradient(90deg, hsl(var(--sq-cyan)), hsl(var(--sq-blue) / 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    hsl(var(--sq-cyan)),
+    hsl(var(--sq-blue) / 0.2),
+    transparent
+  );
 }
 
 .sidequests-panel {
   border: 1px solid hsl(var(--sq-cyan) / 0.16);
-  background: linear-gradient(135deg, hsl(222 38% 13% / 0.94), hsl(220 42% 7% / 0.9));
+  background: linear-gradient(
+    135deg,
+    hsl(222 38% 13% / 0.94),
+    hsl(220 42% 7% / 0.9)
+  );
   box-shadow: 0 1.5rem 4rem hsl(0 0% 0% / 0.18);
   backdrop-filter: blur(16px);
+}
+
+.sidequests-neon-wash {
+  background: radial-gradient(
+      ellipse at 76% 34%,
+      hsl(var(--sq-cyan) / 0.2),
+      transparent 34%
+    ),
+    linear-gradient(
+      115deg,
+      transparent 35%,
+      hsl(var(--sq-blue) / 0.1) 70%,
+      transparent 100%
+    );
+  mix-blend-mode: screen;
+}
+
+.sidequests-daily-pick {
+  background-image: linear-gradient(
+      90deg,
+      hsl(220 48% 5% / 0.97) 0%,
+      hsl(220 48% 5% / 0.82) 58%,
+      hsl(220 48% 5% / 0.52) 100%
+    ),
+    url("/images/sidequests-neon-glow.jpg");
+  background-size: cover;
+  background-position: center 48%;
+  border-color: hsl(var(--sq-cyan) / 0.28);
+}
+
+.sidequests-arcade-chip {
+  border: 1px solid hsl(var(--sq-cyan) / 0.38);
+  background: hsl(var(--sq-cyan) / 0.12);
+  color: hsl(var(--sq-cyan-soft));
+  box-shadow: 0 0 1.25rem hsl(var(--sq-cyan) / 0.12);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -501,22 +556,45 @@ body {
     animation: sq-rail-in 520ms cubic-bezier(0.23, 1, 0.32, 1) both;
   }
 
-  .sidequests-page .sidequests-rail:nth-child(2) { animation-delay: 60ms; }
-  .sidequests-page .sidequests-rail:nth-child(3) { animation-delay: 120ms; }
-  .sidequests-page .sidequests-rail:nth-child(4) { animation-delay: 180ms; }
-  .sidequests-page .sidequests-rail:nth-child(5) { animation-delay: 240ms; }
+  .sidequests-page .sidequests-rail:nth-child(2) {
+    animation-delay: 60ms;
+  }
+  .sidequests-page .sidequests-rail:nth-child(3) {
+    animation-delay: 120ms;
+  }
+  .sidequests-page .sidequests-rail:nth-child(4) {
+    animation-delay: 180ms;
+  }
+  .sidequests-page .sidequests-rail:nth-child(5) {
+    animation-delay: 240ms;
+  }
 }
 
 @keyframes sq-rail-in {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 640px) {
-  .sidequests-section-heading { align-items: center; }
-  .sidequests-section-heading p { display: none; }
+  .sidequests-section-heading {
+    align-items: center;
+  }
+  .sidequests-section-heading p {
+    display: none;
+  }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .sidequests-page .sidequests-rail {
+    animation: none;
+  }
+}
 
 /* Persistent accessibility preferences. */
 html.sq-high-contrast body {

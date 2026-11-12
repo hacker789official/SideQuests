@@ -1,7 +1,7 @@
-import { notFound } from "next/navigation"
 import Image from "next/image"
+import Link from "next/link"
+import { notFound } from "next/navigation"
 import { anilist } from "@/anilist/api"
-import { MangaReader } from "@/components/manga-reader"
 import {
   formatLabel,
   mediaYear,
@@ -9,6 +9,8 @@ import {
   scoreToTenPoint,
   stripDescriptionHtml,
 } from "@/anilist/utils"
+
+import { MangaReader } from "@/components/manga-reader"
 
 interface MangaDetailPageProps {
   params: Promise<{ id: string }>
@@ -26,7 +28,9 @@ export async function generateMetadata({ params }: MangaDetailPageProps) {
 
 export const revalidate = 21600
 
-export default async function MangaDetailPage({ params }: MangaDetailPageProps) {
+export default async function MangaDetailPage({
+  params,
+}: MangaDetailPageProps) {
   const { id } = await params
   const { Media } = await anilist.detail.byId(Number(id))
 
@@ -39,7 +43,7 @@ export default async function MangaDetailPage({ params }: MangaDetailPageProps) 
   const studios = Media.studios?.nodes?.map((s) => s.name).join(", ")
 
   return (
-    <div className="relative">
+    <div className="sidequests-page relative">
       {Media.bannerImage && (
         <div className="relative h-64 w-full overflow-hidden md:h-96">
           <Image
@@ -49,32 +53,38 @@ export default async function MangaDetailPage({ params }: MangaDetailPageProps) 
             className="object-cover opacity-40"
             priority
           />
+          <div
+            className="sidequests-neon-wash pointer-events-none absolute inset-0"
+            aria-hidden="true"
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
         </div>
       )}
 
       <div className="container -mt-24 flex flex-col gap-8 pb-16 md:flex-row">
-        <div className="relative mx-auto aspect-poster w-48 shrink-0 overflow-hidden rounded-md border cp-border-glow md:mx-0 md:w-64">
+        <div className="relative mx-auto aspect-poster w-48 shrink-0 overflow-hidden rounded-2xl border border-cyan-200/25 shadow-[0_20px_55px_rgba(0,0,0,0.4),0_0_30px_hsl(var(--primary)/0.18)] md:mx-0 md:w-64">
           {cover ? (
             <Image src={cover} alt={title} fill className="object-cover" />
           ) : null}
         </div>
 
         <div className="flex-1 space-y-4">
-          <p className="text-xs font-bold uppercase tracking-[0.3em] text-accent cp-glow-magenta">
+          <p className="cp-glow-cyan text-xs font-bold uppercase tracking-[0.3em] text-cyan-200">
             Manga
           </p>
-          <h1 className="text-3xl font-black tracking-tight md:text-5xl cp-gradient-text">
+          <h1 className="cp-gradient-text text-3xl font-black tracking-tight md:text-5xl">
             {title}
           </h1>
 
           <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
             {score !== null && (
-              <span className="rounded-sm border border-primary/60 px-2 py-0.5 font-bold text-primary cp-glow-cyan">
+              <span className="cp-glow-cyan rounded-sm border border-primary/60 px-2 py-0.5 font-bold text-primary">
                 {score} / 10
               </span>
             )}
-            {formatLabel(Media.format) && <span>{formatLabel(Media.format)}</span>}
+            {formatLabel(Media.format) && (
+              <span>{formatLabel(Media.format)}</span>
+            )}
             {year && <span>{year}</span>}
             {Media.chapters && <span>{Media.chapters} chapters</span>}
             {Media.volumes && <span>{Media.volumes} volumes</span>}
@@ -86,7 +96,7 @@ export default async function MangaDetailPage({ params }: MangaDetailPageProps) 
               {Media.genres.map((genre) => (
                 <span
                   key={genre}
-                  className="rounded-full border border-accent/40 px-3 py-1 text-xs text-accent"
+                  className="rounded-full border border-cyan-200/25 bg-cyan-300/[0.06] px-3 py-1 text-xs text-cyan-100"
                 >
                   {genre}
                 </span>
@@ -94,13 +104,20 @@ export default async function MangaDetailPage({ params }: MangaDetailPageProps) 
             </div>
           )}
 
+          <Link
+            href="#manga-reader"
+            className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 py-2.5 text-sm font-black text-primary-foreground shadow-lg shadow-primary/20 transition hover:-translate-y-0.5 hover:bg-cyan-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-100 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:translate-y-0 active:scale-[0.98]"
+          >
+            Read in SideQuests
+          </Link>
+
           <p className="max-w-3xl leading-relaxed text-muted-foreground">
             {stripDescriptionHtml(Media.description)}
           </p>
         </div>
       </div>
 
-      <div className="container pb-16">
+      <div id="manga-reader" className="container scroll-mt-24 pb-16">
         <MangaReader
           mangaId={Media.id}
           title={title}

@@ -433,6 +433,17 @@ export const MediaWatchDialog: React.FC<MediaWatchDialogProps> = ({
     setIframeError(false)
     setIframeLoading(true)
     setSrc(playerUrl)
+    if (loadTimeoutRef.current) clearTimeout(loadTimeoutRef.current)
+    loadTimeoutRef.current = setTimeout(() => {
+      setIframeLoading((loading) => {
+        if (loading) setIframeError(true)
+        return false
+      })
+    }, 20000)
+
+    return () => {
+      if (loadTimeoutRef.current) clearTimeout(loadTimeoutRef.current)
+    }
   }, [open, playerUrl])
 
   const handleRetry = useCallback(async () => {
@@ -523,12 +534,12 @@ export const MediaWatchDialog: React.FC<MediaWatchDialogProps> = ({
           <DialogTrigger
             className={cn(
               buttonVariants({ variant: "outline" }),
-              "group relative flex items-center gap-2 transition-all duration-300 min-w-[120px] font-medium rounded-full hover:border-primary hover:bg-primary/10 hover:text-primary mr-2"
+              "group relative mr-2 flex min-w-[120px] items-center gap-2 rounded-full font-medium transition-all duration-300 hover:border-primary hover:bg-primary/10 hover:text-primary"
             )}
             ref={dialogTriggerRef}
             onClick={() => setOpen(true)}
           >
-            <Play className="size-4 transition-transform group-hover:scale-110 duration-200" />
+            <Play className="group-hover:scale-110 size-4 transition-transform duration-200" />
             <span>Stream</span>
           </DialogTrigger>
         )}
@@ -546,7 +557,7 @@ export const MediaWatchDialog: React.FC<MediaWatchDialogProps> = ({
               }
             }}
             className={cn(
-              "w-full max-w-[1380px] p-0 bg-[#08080a] border-white/10 text-zinc-100 overflow-hidden flex flex-col shrink-0 rounded-2xl max-h-[96vh] md:max-h-[94vh] shadow-2xl shadow-black/70",
+              "flex max-h-[96vh] w-full max-w-[1380px] shrink-0 flex-col overflow-hidden rounded-2xl border-white/10 bg-[#08080a] p-0 text-zinc-100 shadow-2xl shadow-black/70 md:max-h-[94vh]",
               isTv ? "md:max-w-[1380px]" : "md:max-w-[1180px]"
             )}
           >
@@ -567,7 +578,7 @@ export const MediaWatchDialog: React.FC<MediaWatchDialogProps> = ({
                 </div>
                 <div className="min-w-0">
                   <div className="mb-0.5 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.22em] text-red-400/80">
-                    <span>Now streaming</span>
+                    <span>Player selected</span>
                     <span className="size-1 rounded-full bg-red-400" />
                     <span className="text-zinc-500">
                       {selectedSource.label}
@@ -598,18 +609,18 @@ export const MediaWatchDialog: React.FC<MediaWatchDialogProps> = ({
                 className="group flex shrink-0 items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-xs font-semibold text-zinc-300 transition-all hover:border-red-400/30 hover:bg-red-500/10 hover:text-white active:scale-[0.98]"
                 title="Open Player Guide & Tips"
               >
-                <HelpCircle className="size-4 text-red-400 transition-transform group-hover:rotate-12" />
+                <HelpCircle className="group-hover:rotate-12 size-4 text-red-400 transition-transform" />
                 <span className="hidden sm:inline">Player guide</span>
               </button>
             </div>
 
             <div
               className={cn(
-                "grid grid-cols-1 w-full flex-1 min-h-0",
+                "grid min-h-0 w-full flex-1 grid-cols-1",
                 isTv && "md:grid-cols-[1fr,280px] lg:grid-cols-[1fr,320px]"
               )}
             >
-              <div className="flex flex-col flex-1 min-h-0">
+              <div className="flex min-h-0 flex-1 flex-col">
                 <div className="relative aspect-[16/9] w-full overflow-hidden border-b border-white/[0.08] bg-black">
                   <div className="pointer-events-none absolute inset-0 z-[5] bg-[radial-gradient(circle_at_50%_0%,rgba(239,68,68,0.14),transparent_36%)]" />
 
@@ -617,10 +628,10 @@ export const MediaWatchDialog: React.FC<MediaWatchDialogProps> = ({
                     <div className="pointer-events-none absolute inset-x-0 top-0 z-[6] flex items-center justify-between bg-gradient-to-b from-black/80 to-transparent px-4 pb-8 pt-4 sm:px-5">
                       <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-300 backdrop-blur-md">
                         <span className="size-1.5 animate-pulse rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
-                        Live connection
+                        Player frame
                       </div>
                       <div className="rounded-full border border-white/10 bg-black/40 px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-400 backdrop-blur-md">
-                        HD playback
+                        External source
                       </div>
                     </div>
                   )}
@@ -655,8 +666,8 @@ export const MediaWatchDialog: React.FC<MediaWatchDialogProps> = ({
                     className={cn(
                       "absolute inset-0 z-10 size-full bg-black transition-opacity duration-300 ease-out",
                       iframeLoading || iframeError || isOffline
-                        ? "opacity-0 pointer-events-none hidden"
-                        : "opacity-100 pointer-events-auto"
+                        ? "pointer-events-none hidden opacity-0"
+                        : "pointer-events-auto opacity-100"
                     )}
                     src={iframeError || isOffline ? "" : src}
                     onLoad={() => {
@@ -694,7 +705,7 @@ export const MediaWatchDialog: React.FC<MediaWatchDialogProps> = ({
                           </p>
                           <span className="inline-flex items-center gap-1 rounded-full bg-emerald-400/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-400">
                             <span className="size-1.5 rounded-full bg-emerald-400" />{" "}
-                            Ready
+                            Selected
                           </span>
                         </div>
                         <p className="mt-0.5 truncate text-[11px] text-zinc-500">
@@ -842,7 +853,7 @@ export const MediaWatchDialog: React.FC<MediaWatchDialogProps> = ({
               {isTv && (
                 <div
                   data-tour="episodes-selector"
-                  className="hidden min-h-0 h-full w-full flex-col gap-5 border-l border-white/[0.06] bg-[#0b0b0e] p-5 md:flex"
+                  className="hidden size-full min-h-0 flex-col gap-5 border-l border-white/[0.06] bg-[#0b0b0e] p-5 md:flex"
                 >
                   {(() => {
                     const seasonsList = Object.keys(seasonDetails)
@@ -882,8 +893,8 @@ export const MediaWatchDialog: React.FC<MediaWatchDialogProps> = ({
                       (_, i) => i + 1
                     )
                     return (
-                      <div className="flex-1 flex flex-col space-y-2 overflow-hidden min-h-0">
-                        <div className="flex items-center justify-between w-full">
+                      <div className="flex min-h-0 flex-1 flex-col space-y-2 overflow-hidden">
+                        <div className="flex w-full items-center justify-between">
                           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">
                             Episodes
                           </span>
@@ -896,14 +907,14 @@ export const MediaWatchDialog: React.FC<MediaWatchDialogProps> = ({
                             </button>
                           )}
                         </div>
-                        <div className="flex-1 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
+                        <div className="scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent flex-1 overflow-y-auto pr-1">
                           <div className="grid grid-cols-3 gap-2">
                             {episodesList.map((ep) => (
                               <button
                                 key={ep}
                                 onClick={() => handleEpisodeChange(ep)}
                                 className={cn(
-                                  "rounded-lg border py-2.5 text-xs font-semibold text-center transition-all active:scale-[0.97]",
+                                  "rounded-lg border py-2.5 text-center text-xs font-semibold transition-all active:scale-[0.97]",
                                   episode === ep
                                     ? "border-red-400 bg-red-500 text-white shadow-lg shadow-red-950/30"
                                     : "border-white/10 bg-white/[0.04] text-zinc-400 hover:border-white/20 hover:bg-white/[0.08] hover:text-white"

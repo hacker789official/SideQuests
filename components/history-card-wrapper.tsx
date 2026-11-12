@@ -94,11 +94,14 @@ export const HistoryCardWrapper: React.FC<HistoryCardWrapperProps> = ({
 
   return (
     <div className="relative cursor-pointer">
-      
       <button
         onClick={handleRemove}
-        className="absolute left-2 top-2 z-20 rounded-full bg-background/80 p-1 text-foreground backdrop-blur-sm transition-colors hover:bg-background"
-        aria-label="Remove from watch history"
+        type="button"
+        className="absolute left-2 top-2 z-20 flex size-11 items-center justify-center rounded-full bg-background/85 text-foreground shadow-sm backdrop-blur-sm transition-colors hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        aria-label={`Remove ${
+          (item.media_type === "tv" ? item.name : item.title) || "title"
+        } from watch history`}
+        title="Remove from watch history"
       >
         <X className="size-4" />
       </button>

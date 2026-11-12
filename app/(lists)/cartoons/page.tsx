@@ -69,7 +69,8 @@ export default async function CartoonsPage({
             key={option.code || "all"}
             href={option.code ? `/cartoons?lang=${option.code}` : "/cartoons"}
             prefetch={false}
-            className={`shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition ${
+            aria-current={lang === option.code ? "page" : undefined}
+            className={`shrink-0 rounded-full border px-4 py-2.5 text-xs font-bold transition ${
               lang === option.code
                 ? "border-primary bg-primary text-primary-foreground"
                 : "border-cyan-300/15 bg-[#0b2038]/80 text-slate-200 hover:border-cyan-300/45 hover:bg-cyan-300/10"
@@ -79,6 +80,14 @@ export default async function CartoonsPage({
           </Link>
         ))}
       </nav>
+      <p className="-mt-5 text-xs text-muted-foreground" aria-live="polite">
+        Showing{" "}
+        {lang
+          ? languageOptions.find((option) => option.code === lang)?.label ||
+            lang
+          : "all languages"}{" "}
+        · original language
+      </p>
 
       <CartoonProviderRail />
 
@@ -97,9 +106,14 @@ export default async function CartoonsPage({
           </div>
         </div>
         <div className="grid-list">
-          {movies.map((movie) => (
-            <MovieCard key={movie.id} {...movie} />
-          ))}
+          {movies.length ? (
+            movies.map((movie) => <MovieCard key={movie.id} {...movie} />)
+          ) : (
+            <p className="col-span-full rounded-xl border border-border/60 p-6 text-sm text-muted-foreground">
+              No animated movies found for this language. Try another language
+              or view all languages.
+            </p>
+          )}
         </div>
       </section>
 
@@ -118,18 +132,25 @@ export default async function CartoonsPage({
           </div>
         </div>
         <div className="grid-list">
-          {shows.map((show) => (
-            <div key={show.id} className="flex flex-col gap-3">
-              <TvCard {...show} />
-              <Link
-                href={`/tv/${show.id}/seasons`}
-                prefetch={false}
-                className="inline-flex min-h-10 items-center justify-center rounded-full border border-primary/40 bg-primary/10 px-4 py-2 text-xs font-bold text-primary transition hover:bg-primary/20"
-              >
-                Browse seasons &amp; episodes
-              </Link>
-            </div>
-          ))}
+          {shows.length ? (
+            shows.map((show) => (
+              <div key={show.id} className="flex flex-col gap-3">
+                <TvCard {...show} />
+                <Link
+                  href={`/tv/${show.id}/seasons`}
+                  prefetch={false}
+                  className="inline-flex min-h-11 items-center justify-center rounded-full border border-primary/40 bg-primary/10 px-4 py-2 text-xs font-bold text-primary transition hover:bg-primary/20"
+                >
+                  Browse seasons &amp; episodes
+                </Link>
+              </div>
+            ))
+          ) : (
+            <p className="col-span-full rounded-xl border border-border/60 p-6 text-sm text-muted-foreground">
+              No animated series found for this language. Try another language
+              or view all languages.
+            </p>
+          )}
         </div>
       </section>
 

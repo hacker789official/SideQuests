@@ -105,15 +105,19 @@ export default async function Detail({
   ]
 
   return (
-    <section className="space-y-4">
-      
+    <section
+      className="sidequests-rail space-y-4"
+      aria-label="TV series details"
+    >
       <WatchHistoryTracker id={id} mediaType="tv" data={tvShow} />
 
-      <div className="grid grid-cols-2 gap-y-12 rounded border p-6 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-x-5 gap-y-8 rounded-2xl border border-cyan-200/15 bg-slate-950/45 p-5 shadow-[0_16px_48px_rgba(0,0,0,0.2)] sm:p-6 lg:grid-cols-4">
         {items.map((item) => (
           <div key={item.title}>
-            <h2 className="font-medium md:text-xl">{item.title}</h2>
-            <p className="mt-2 line-clamp-2 text-sm text-muted-foreground md:text-base">
+            <h2 className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-cyan-200/80 md:text-xs">
+              {item.title}
+            </h2>
+            <p className="mt-2 line-clamp-2 text-sm font-medium text-zinc-100 md:text-base">
               {item.value}
             </p>
           </div>
@@ -121,19 +125,19 @@ export default async function Detail({
       </div>
 
       {lastEpisode && (
-        <div className="h-hero relative w-full">
+        <div className="sidequests-panel h-hero relative w-full overflow-hidden rounded-2xl">
           <MediaBackdrop
             image={lastEpisode.still_path}
             alt={lastEpisode.name}
           />
           <div className="overlay">
             <div className="p-4 md:p-10">
-              <Badge className="mb-4 gap-1">
+              <Badge className="mb-4 gap-1 border border-cyan-200/30 bg-cyan-300/10 text-cyan-100">
                 <span>S{pad(lastEpisode.season_number)}</span>
                 <span>E{pad(lastEpisode.episode_number)}</span>
               </Badge>
 
-              <h2 className="line-clamp-1 text-lg font-medium md:text-2xl">
+              <h2 className="line-clamp-1 text-lg font-black text-white md:text-2xl">
                 {lastEpisode.name}
               </h2>
               <p className="line-clamp-3 max-w-xl text-muted-foreground md:line-clamp-6">
@@ -141,7 +145,10 @@ export default async function Detail({
               </p>
               <Link
                 href={`/tv/${id}/seasons?s=${lastEpisode.season_number}`}
-                className={cn(buttonVariants({ variant: "default" }), "mt-4")}
+                className={cn(
+                  buttonVariants({ variant: "default" }),
+                  "mt-4 min-h-11 rounded-xl bg-primary font-bold text-primary-foreground hover:bg-cyan-200"
+                )}
                 prefetch={false}
               >
                 View Episodes

@@ -41,11 +41,18 @@ const SiteNavItem = ({ title, icon, items, href, description }: NavItem) => {
     <NavigationMenuItem>
       <NavigationMenuTrigger
         className={cn(
-          "bg-transparent hover:bg-white/[0.06] data-[state=open]:bg-white/[0.06] text-zinc-400 hover:text-white data-[active]:bg-transparent data-[state=open]:text-white transition-all rounded-md px-2.5 h-9 text-[10px] font-black uppercase tracking-[0.14em] gap-2 border border-transparent select-none",
-          isActive && "border-cyan-300/25 bg-cyan-300/10 hover:bg-cyan-300/15 text-cyan-100 hover:text-cyan-100 shadow-[0_0_24px_hsl(var(--primary)/0.12)]"
+          "h-10 select-none gap-2 rounded-xl border border-transparent bg-transparent px-3 text-[11px] font-extrabold uppercase tracking-widest text-zinc-300 transition-all hover:bg-cyan-300/[0.08] hover:text-white data-[active]:bg-transparent data-[state=open]:bg-cyan-300/[0.08] data-[state=open]:text-white",
+          isActive &&
+            "border-cyan-300/30 bg-cyan-300/10 text-cyan-100 shadow-[0_0_24px_hsl(var(--primary)/0.16)] hover:bg-cyan-300/15 hover:text-cyan-100"
         )}
       >
-        <Icon className={cn("size-4", isActive ? "text-primary" : "text-zinc-400 group-hover:text-white")} /> {title}
+        <Icon
+          className={cn(
+            "size-4",
+            isActive ? "text-primary" : "group-hover:text-white text-zinc-400"
+          )}
+        />{" "}
+        {title}
       </NavigationMenuTrigger>
       <NavigationMenuContent>
         <div className="p-6 pb-0">
@@ -71,11 +78,18 @@ const SiteNavItemSingle = ({ title, icon, href }: NavItem) => {
       <Link href={href} legacyBehavior passHref prefetch={false}>
         <NavigationMenuLink
           className={cn(
-            "inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-2.5 text-[10px] font-black uppercase tracking-[0.14em] text-zinc-400 hover:text-white hover:bg-white/[0.06] transition-all duration-200 gap-2 border border-transparent select-none",
-            isActive && "border-cyan-300/25 bg-cyan-300/10 hover:bg-cyan-300/15 text-cyan-100 hover:text-cyan-100 shadow-[0_0_24px_hsl(var(--primary)/0.12)]"
+            "inline-flex h-10 w-max select-none items-center justify-center gap-2 rounded-xl border border-transparent bg-transparent px-3 text-[11px] font-extrabold uppercase tracking-widest text-zinc-300 transition-all duration-200 hover:bg-cyan-300/[0.08] hover:text-white",
+            isActive &&
+              "border-cyan-300/30 bg-cyan-300/10 text-cyan-100 shadow-[0_0_24px_hsl(var(--primary)/0.16)] hover:bg-cyan-300/15 hover:text-cyan-100"
           )}
         >
-          <Icon className={cn("size-4", isActive ? "text-primary" : "text-zinc-400 group-hover:text-white")} /> {title}
+          <Icon
+            className={cn(
+              "size-4",
+              isActive ? "text-primary" : "group-hover:text-white text-zinc-400"
+            )}
+          />{" "}
+          {title}
         </NavigationMenuLink>
       </Link>
     </NavigationMenuItem>
