@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { useSearch } from "@/hooks"
 import { Search, XIcon } from "lucide-react"
 
@@ -31,10 +31,16 @@ export const SearchInput: React.FC<SearchInputProps> = ({
   placeholder = "Search movies, shows, anime…",
 }) => {
   const router = useRouter()
+  const pathname = usePathname()
   const { term, handleChange, handleKeyDown, clearSearch } = useSearch(auto)
   const [suggestions, setSuggestions] = useState<Suggestion[]>([])
   const [focused, setFocused] = useState(false)
   const activeTerm = String(value ?? term)
+
+  useEffect(() => {
+    setFocused(false)
+    setSuggestions([])
+  }, [pathname])
 
   useEffect(() => {
     if (value !== undefined || activeTerm.trim().length < 2) {

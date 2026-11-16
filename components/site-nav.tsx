@@ -18,7 +18,7 @@ import {
 const SiteNav = () => {
   return (
     <div className="flex min-w-0 items-center">
-      <NavigationMenu className="hidden lg:flex">
+      <NavigationMenu className="hidden 2xl:flex">
         <NavigationMenuList>
           {navigation.items.map((item) =>
             item.items ? (

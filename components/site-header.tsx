@@ -67,7 +67,7 @@ export const SiteHeader = () => {
           <Suspense
             fallback={<Skeleton className="h-10 w-[min(14rem,50vw)] sm:w-60" />}
           >
-            <SearchInput className="w-[min(10rem,40vw)] sm:w-56 lg:w-64" />
+            <SearchInput className="w-[min(8rem,33vw)] sm:w-56 lg:w-64 2xl:w-52" />
           </Suspense>
 
           <SiteSettings />
@@ -83,7 +83,7 @@ export const SiteHeader = () => {
             <span className="sr-only">Sync Account</span>
           </Button>
 
-          <div className="lg:hidden">
+          <div className="2xl:hidden">
             <SiteMenu />
           </div>
         </div>
