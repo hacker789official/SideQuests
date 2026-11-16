@@ -21,7 +21,7 @@ type Suggestion = {
 }
 
 export const SearchInput: React.FC<SearchInputProps> = ({
-  auto = true,
+  auto = false,
   value,
   className,
   onChange,

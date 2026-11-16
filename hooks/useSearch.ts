@@ -29,11 +29,11 @@ export const useSearch = (auto: boolean = true) => {
     if (auto) {
       handleSearch(value)
     }
-  }, [value, auto]) 
+  }, [value, auto])
 
   function handleSearch(value: string) {
     if (value !== "") {
-      router.push(`/search?q=${value}`)
+      router.push(`/search?q=${encodeURIComponent(value.trim())}`)
 
       sendGAEvent("event", "search", {
         search_term: value,
@@ -65,8 +65,9 @@ export const useSearch = (auto: boolean = true) => {
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-    if (event.key === "Enter" && query !== value && !auto) {
-      handleSearch(value)
+    if (event.key === "Enter" && query !== term && !auto) {
+      event.preventDefault()
+      handleSearch(term)
     }
 
     if (event.key === "Escape") {

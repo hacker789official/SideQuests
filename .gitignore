@@ -15,3 +15,7 @@ android/local.properties
 reference-projects/
 *.tsbuildinfo
 .vercel
+
+playwright-report/
+test-results/
+blob-report/
