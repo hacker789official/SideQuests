@@ -23,14 +23,10 @@ export default async function AnimeHub() {
     "inline-flex min-h-11 items-center rounded-xl border border-cyan-200/35 px-5 py-2 text-sm font-bold text-cyan-100 cp-glow-cyan transition-colors hover:bg-cyan-300/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-100"
 
   return (
-    <div className="sidequests-page container space-y-16 py-8">
-      <header className="space-y-3">
-        <p className="cp-glow-cyan text-xs font-bold uppercase tracking-[0.3em] text-primary">
-          Anime &amp; Manga
-        </p>
-        <h1 className="cp-gradient-text text-4xl font-black tracking-tight md:text-6xl">
-          Anime
-        </h1>
+    <div className="sidequests-page sq-discovery-page container space-y-16 py-8">
+      <header className="sq-route-intro">
+        <p className="sq-route-kicker">SIDEQUESTS / ANIME</p>
+        <h1>Anime</h1>
         <p className="max-w-2xl text-muted-foreground">
           Browse trending and popular anime series and films, then explore
           AniList’s catalog with filters for genre, season, year, and score.

@@ -1,90 +1,117 @@
 import { Metadata } from "next"
 import Link from "next/link"
 import { tmdb } from "@/tmdb/api"
+import {
+  ArrowUpRight,
+  Clapperboard,
+  Compass,
+  MonitorPlay,
+  Sparkles,
+} from "lucide-react"
 
 import { MovieHero } from "@/components/movie-hero"
 import { PersonalRecommendations } from "@/components/personal-recommendations"
 import { QuickGenreFilters } from "@/components/quick-genre-filters"
-import { RandomSideQuestButton } from "@/components/random-sidequest-button"
 import { TrendCarousel } from "@/components/trend-carousel"
 import { WatchHistoryCarousel } from "@/components/watch-history-carousel"
 
-export const metadata: Metadata = {
-  title: "Home",
-}
-
+export const metadata: Metadata = { title: "Home" }
 export const revalidate = 604800
+
+const destinations = [
+  {
+    href: "/movie/popular",
+    label: "FEATURES",
+    title: "Movies",
+    icon: Clapperboard,
+    tone: "movie",
+  },
+  {
+    href: "/tv/popular",
+    label: "LONG FORM",
+    title: "Series",
+    icon: MonitorPlay,
+    tone: "series",
+  },
+  {
+    href: "/anime",
+    label: "ANIME + MANGA",
+    title: "Anime",
+    icon: Sparkles,
+    tone: "anime",
+  },
+  {
+    href: "/cartoons",
+    label: "ALL AGES",
+    title: "Cartoons",
+    icon: Compass,
+    tone: "cartoons",
+  },
+]
 
 export default async function Home() {
   const [{ results: movies }, { results: tvShows }] = await Promise.all([
     tmdb.trending.movie({ time: "day", page: "1" }),
     tmdb.trending.tv({ time: "day", page: "1" }),
   ])
-  const dailyIndex = new Date().getUTCDate() % Math.max(movies.length, 1)
-  const dailyMovie = movies[dailyIndex] || movies[0]
 
   return (
-    <section className="sidequests-page space-y-10 pb-20">
-      <MovieHero
-        movies={movies}
-        label="Arcade Spotlight"
-        count={3}
-        fullBleed={true}
-      />
+    <main className="sq-home">
+      <MovieHero movies={movies} label="THE ARCADE SELECTS" />
+      <section className="sq-portals" aria-label="Explore SideQuests">
+        <div className="sq-portals__intro">
+          <p>
+            <span /> PICK A PORTAL
+          </p>
+          <h2>
+            What are you <em>in the mood for?</em>
+          </h2>
+        </div>
+        <div className="sq-portals__grid">
+          {destinations.map(
+            ({ href, label, title, icon: Icon, tone }, index) => (
+              <Link
+                href={href}
+                key={href}
+                className={`sq-portal sq-portal--${tone}`}
+                prefetch={false}
+              >
+                <span className="sq-portal__index">0{index + 1}</span>
+                <Icon className="sq-portal__icon" strokeWidth={1.5} />
+                <span className="sq-portal__label">{label}</span>
+                <strong>{title}</strong>
+                <ArrowUpRight className="sq-portal__arrow" />
+              </Link>
+            )
+          )}
+        </div>
+      </section>
       <QuickGenreFilters />
-
-      <div className="space-y-10 pt-2">
-        <div className="streamhub-rail px-4 sm:px-6 lg:px-10">
+      <div className="sq-home__lanes">
+        <section className="sq-home__continue">
+          <div className="sq-home__section-tag">
+            <span /> YOUR STORY, RIGHT WHERE YOU LEFT IT
+          </div>
           <WatchHistoryCarousel
             title="Continue Watching"
             mode="continue"
             link="/library"
           />
-        </div>
-
+        </section>
         <PersonalRecommendations />
-
-        {dailyMovie ? (
-          <section className="streamhub-rail px-4 sm:px-6 lg:px-10">
-            <div className="sidequests-panel sidequests-daily-pick flex flex-col items-start justify-between gap-4 rounded-2xl p-5 sm:flex-row sm:items-center sm:p-6">
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-primary">
-                  Daily featured quest
-                </p>
-                <h2 className="mt-1 text-xl font-black tracking-tight">
-                  {dailyMovie.title}
-                </h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  A fresh pick from today’s trending films.
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <Link
-                  href={`/movie/${dailyMovie.id}`}
-                  className="inline-flex items-center rounded-full bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition hover:scale-[1.02]"
-                >
-                  Open pick
-                </Link>
-                <RandomSideQuestButton />
-              </div>
-            </div>
-          </section>
-        ) : null}
-
         <TrendCarousel
           type="movie"
-          title="Trending Movies"
+          title="In the spotlight"
           link="/trending/movie"
           items={movies}
         />
-
         <TrendCarousel
           type="tv"
-          title="Trending Series"
+          title="The series queue"
           link="/trending/tv"
           items={tvShows}
         />
       </div>
-    </section>
+    </main>
   )
 }

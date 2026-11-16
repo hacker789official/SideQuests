@@ -8,7 +8,7 @@ const Root: React.FC<ComponentProps<"div">> = ({ className, ...props }) => {
   return (
     <div
       className={cn(
-        "sidequests-detail-page animate-fade-in-quick relative -mt-4 overflow-hidden bg-background pb-24",
+        "sq-detail-shell sidequests-detail-page animate-fade-in-quick relative -mt-4 overflow-hidden bg-background pb-24",
         className
       )}
       {...props}

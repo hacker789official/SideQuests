@@ -14,3 +14,4 @@ android/local.properties
 *.keystore
 reference-projects/
 *.tsbuildinfo
+.vercel

@@ -21,22 +21,24 @@ export default async function MangaHub() {
   ])
 
   return (
-    <div className="container space-y-16 py-8">
+    <div className="sidequests-page sq-discovery-page container space-y-16 py-8">
       <div className="space-y-3">
-        <p className="text-xs font-bold uppercase tracking-[0.3em] text-accent cp-glow-magenta">
-          Anime & Manga
-        </p>
-        <h1 className="text-4xl font-black tracking-tight md:text-6xl cp-gradient-text">
-          Manga
-        </h1>
+        <p className="sq-route-kicker">SIDEQUESTS / MANGA</p>
+        <h1 className="sq-route-title">Manga</h1>
         <p className="max-w-2xl text-muted-foreground">
-          Browse AniList’s 100k+ manga catalog alongside public latest-release metadata from MangaYi. MangaYi reading links open on the original source, while MangaDex remains available for in-site reading.
+          Browse AniList’s 100k+ manga catalog alongside public latest-release
+          metadata from MangaYi. MangaYi reading links open on the original
+          source, while MangaDex remains available for in-site reading.
         </p>
       </div>
 
       <MangaYiReleaseRail />
 
-      <Section title="Trending Now" href="/manga/trending" media={trending.media} />
+      <Section
+        title="Trending Now"
+        href="/manga/trending"
+        media={trending.media}
+      />
       <Section title="Popular" href="/manga/popular" media={popular.media} />
 
       <div className="flex flex-wrap gap-3 pt-4">

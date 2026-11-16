@@ -37,7 +37,7 @@ export const SiteHeader = () => {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-40 w-full transition-all duration-300",
+        "sq-site-header fixed inset-x-0 top-0 z-40 w-full transition-all duration-300",
         isFloatingHeaderPage
           ? "fixed border-b-0"
           : "border-b border-white/[0.08] bg-zinc-950/95 backdrop-blur-xl",
@@ -48,11 +48,11 @@ export const SiteHeader = () => {
           : ""
       )}
     >
-      <div className="container flex h-14 items-center gap-2 px-3 sm:h-16 sm:justify-between sm:gap-3 sm:px-4 lg:h-[4.5rem] lg:px-0">
+      <div className="sq-site-header__inner container flex h-14 items-center gap-2 px-3 sm:h-16 sm:justify-between sm:gap-3 sm:px-4 lg:h-[4.5rem] lg:px-0">
         <Link
           href="/"
           aria-label="SideQuests home"
-          className="group flex shrink-0 items-center gap-2 text-sm font-black tracking-tight text-white"
+          className="sq-site-header__brand group flex shrink-0 items-center gap-2 text-sm font-black tracking-tight text-white"
         >
           <span className="group-hover:bg-cyan-300/20 flex size-8 items-center justify-center rounded-xl border border-cyan-200/35 bg-cyan-300/10 text-cyan-200 shadow-[0_0_22px_rgba(34,211,238,0.22)] transition sm:size-9">
             <Zap className="size-4 fill-current sm:size-[18px]" />

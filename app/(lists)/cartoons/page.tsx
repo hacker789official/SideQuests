@@ -46,14 +46,10 @@ export default async function CartoonsPage({
   ] = await Promise.all([tmdb.discover.movie(base), tmdb.discover.tv(base)])
 
   return (
-    <div className="container space-y-8 pb-20">
-      <header className="space-y-2 pt-4 md:pt-8">
-        <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-primary">
-          Family quest
-        </p>
-        <h1 className="text-3xl font-black tracking-tight md:text-5xl">
-          Cartoons in your language
-        </h1>
+    <div className="sq-list-page container space-y-8 pb-20">
+      <header className="sq-route-intro">
+        <p className="sq-route-kicker">SIDEQUESTS / ALL AGES</p>
+        <h1>Cartoons in your language</h1>
         <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
           Browse animated movies and series by original language. Audio and
           subtitle availability depends on the selected official source.

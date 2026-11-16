@@ -35,11 +35,12 @@ export const MovieList: React.FC<MovieListProps> = async ({
   }
 
   return (
-    <div className="container space-y-8">
-      <div className="md:mb-12 md:mt-6">
-        <h1 className="mb-2 text-2xl font-medium">{title}</h1>
+    <div className="sq-list-page container space-y-8">
+      <header className="sq-route-intro">
+        <p className="sq-route-kicker">SIDEQUESTS / MOVIES</p>
+        <h1>{title}</h1>
         <p className="max-w-3xl text-muted-foreground">{description}</p>
-      </div>
+      </header>
 
       <div className="grid-list">
         {results.map((movie) => (

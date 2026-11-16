@@ -43,7 +43,7 @@ export default async function MangaDetailPage({
   const studios = Media.studios?.nodes?.map((s) => s.name).join(", ")
 
   return (
-    <div className="sidequests-page relative">
+    <div className="sidequests-page sq-anime-detail relative">
       {Media.bannerImage && (
         <div className="relative h-64 w-full overflow-hidden md:h-96">
           <Image
